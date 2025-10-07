@@ -1,0 +1,14 @@
+{%  extends 'base.html' %}
+{% block title  %} Home {% endblock %}
+
+
+{% block content %}
+{%  for post in posts %}
+   <a href="{% url 'post_detail' post.slug  %}"> <h1 class="h">{{ post.title }}</h1></a>
+    <h2>{{ post.body }}</h2>
+    <h3>{{ post.author }}</h3>
+    <h4>{{ post.created_at }}</h4>
+    <h5>{{ post.updated_at }}</h5>
+<h1>------------------------------------------</h1>
+{% endfor%}
+{% endblock %}
