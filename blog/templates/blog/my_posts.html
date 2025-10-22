@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Dashboard - My Posts
+{% endblock %}
+
+{% block content %}
+    {% for post in posts %}
+        <div>
+           <h2>{{ post.body }}</h2>
+          <h3>{{ post.author }}</h3>
+          <a href="{% url 'post_edit' post.slug %}">Edit post</a>
+          <a href="{% url 'delete_post' post.slug %}">delete post</a>
+        </div>
+        <h1>-----------------------</h1>
+        <h1>-----------------------</h1>
+    {% endfor %}
+{% endblock %}

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from blog.models import Post
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -14,3 +15,6 @@ class SignUpForm(UserCreationForm):
         if User.objects.filter(email__iexact=email).exists():
             raise forms.ValidationError("Email is already in use.")
         return email
+    
+
+

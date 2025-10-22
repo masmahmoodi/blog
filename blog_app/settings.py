@@ -42,6 +42,11 @@ INSTALLED_APPS = [
     'account',
     
 ]
+LOGIN_URL="login"
+LOGIN_REDIRECT_URL = "post_list"
+LOGOUT_REDIRECT_URL = "login"
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -125,6 +130,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']   # <-- tell Django about /static at the project root
 # (optional for production later)
 # STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

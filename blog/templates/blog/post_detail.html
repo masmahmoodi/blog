@@ -8,4 +8,26 @@
     <h4>{{ post.created_at }}</h4>
     <h5>{{ post.updated_at }}</h5>
 
+    <form  method="post">
+        {% csrf_token %}
+        {{comment.comment_body.label_tag}}
+        <br>
+        {{ comment.comment_body }}
+        <br>
+        <button type="submit">comment</button>
+    </form>
+     
+    {% if comments %}
+    <h1>Comments on the post</h1>
+    {% for c in comments %}
+   
+    <p>{{c.author}}</p>
+    <p>{{c.comment_body}}</p>
+    <p>{{c.created_at}}</p>
+    {% if request.user == c.author %}
+    <a href="{% url 'edit_comment' comment_id=c.id %}"> Edit Comment </a>
+    <a href="{% url 'delete_comment' comment_id=c.id %}">Delete Comment</a>
+    {% endif %}
+    {% endfor %}
+    {% endif %}  
 {% endblock %}
