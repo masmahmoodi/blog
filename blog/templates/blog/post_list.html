@@ -7,7 +7,11 @@
 <h1><a href="{%  url 'make_post' %}">Create New Post</a></h1>
 {%  endif %}
 -------------------------------------------
+
+
+
 {%  for post in posts %}
+<div id="post-{{post.id}}">
    <a href="{% url 'post_detail' post.slug  %}"> <h1 class="h">{{ post.title }}</h1></a>
     <h2>{{ post.body }}</h2>
     <h3>{{ post.author }}</h3>
@@ -18,7 +22,30 @@
         <a href="{% url 'post_edit' post.slug %}">Edit</a>
         <a href="{% url  'delete_post' post.slug %}">Delete Post</a>
     {% endif %}
+   <form action="{% url 'like_post' slug=post.slug %}" method="post">
+    {% csrf_token %}
+      <input type="hidden" name="next" value="{{request.get_full_path}}#post-{{post.id}}">
+    {% if user in  post.likes.all %}
+       <button type="submit"><i class="fa-solid fa-heart"></i></button>
+         <span>{{ post.likes.count }} Likes</span>
+    {% else %}
+         <button type="submit"><i class="fa-regular fa-heart"></i></button>        
+    {% endif %}
+
+
+   </form>
+   </div>
 <h1>------------------------------------------</h1>
 
 {% endfor%}
+<div>
+    {% if posts.has_previous %}
+        <a href="?page={{ posts.previous_page_number }}"> Previous </a>
+
+    {% endif %}
+    {{posts.number}} of {{ posts.paginator.num_pages }}
+    {% if posts.has_next %}
+        <a href="?page={{  posts.next_page_number  }}">Next</a>
+    {% endif %}
+</div>
 {% endblock %}

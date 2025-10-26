@@ -1,6 +1,6 @@
 # from django.contrib import admin
 from django.urls import path
-from .views import post_list,post_detail,make_post , edit_comment, post_edit, delete_post,my_posts, delete_comment
+from .views import post_list,post_detail,make_post , edit_comment, post_edit, delete_post,my_posts, delete_comment, like_post
 
 
 urlpatterns = [
@@ -12,5 +12,6 @@ urlpatterns = [
     path("my_posts/", my_posts, name="my_posts"),
     path("comment/edit/<int:comment_id>/", edit_comment, name="edit_comment"),
     path("comment/delete/<int:comment_id>/", delete_comment, name="delete_comment"),
+    path("posts/<slug:slug>/like/", like_post, name="like_post")
     ]
 

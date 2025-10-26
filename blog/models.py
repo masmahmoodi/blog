@@ -10,6 +10,8 @@ class Post(models.Model):
         on_delete=models.CASCADE,
         related_name="posts"
     )
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="liked_posts", blank=True)
+
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -26,8 +28,11 @@ class Post(models.Model):
             self.slug = slug
         super().save(*args, **kwargs)
 
+   
+
     def __str__(self):
         return self.title
+    
 
 
 
