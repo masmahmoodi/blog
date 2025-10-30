@@ -14,7 +14,7 @@ def sign_up(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            Profile.objects.get_or_reate(user=user, defaults={"name":user.username})
+            Profile.objects.get_or_create(user=user, defaults={"name":user.username})
             login(request,user)
             return redirect("post_list")
     else:

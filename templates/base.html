@@ -2,47 +2,220 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   <title>{% block title %}My Blog{% endblock %}</title>
- <link rel="stylesheet" 
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" 
-    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"
-     />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-     <script src="https://cdn.tailwindcss.com"></script>  
-     <script>
+  <!-- Font Awesome (you already had this) -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Tailwind CDN only -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
     tailwind.config = {
       theme: {
+        container: { center: true, padding: "1rem" },
         extend: {
           colors: {
-            sky: '#38bdf8',
             ink: '#0b0f19',
+            sky: '#38bdf8',
             glow: '#9ae6b4',
             rose: '#f472b6',
+            grape: '#8b5cf6',
+            amber: '#f59e0b',
           },
+          boxShadow: {
+            glow: "0 0 0 2px rgba(139,92,246,.25), 0 10px 30px rgba(0,0,0,.35)",
+            neon: "0 0 40px rgba(56,189,248,.35)",
+          },
+          backdropBlur: { xs: "2px" },
           fontFamily: {
-            sans: ['Inter', 'ui-sans-serif', 'system-ui'],
-          },
+            sans: ["Inter", "ui-sans-serif", "system-ui"]
+          }
         }
       }
     }
   </script>
 
+  <!-- Tiny Tailwind layer to style default form elements & prose -->
+  <style type="text/tailwindcss">
+    :root {
+      --blob:
+        radial-gradient(700px 350px at 20% 0%, rgba(56,189,248,.18), transparent 60%),
+        radial-gradient(700px 350px at 80% 10%, rgba(244,114,182,.14), transparent 60%),
+        radial-gradient(900px 400px at 50% 110%, rgba(167,243,208,.12), transparent 60%);
+    }
+    html, body { height: 100%; }
+
+    @layer base {
+      input[type="text"], input[type="email"], input[type="password"], input[type="search"],
+      textarea, select {
+        @apply w-full rounded-lg bg-black/30 border border-white/10 text-white px-4 py-2
+               focus:outline-none focus:ring-2 focus:ring-sky/50 placeholder-white/40;
+      }
+      button, .btn {
+        @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg
+               font-medium bg-gradient-to-r from-sky to-grape text-white shadow-neon
+               hover:shadow-glow transition;
+      }
+      .btn-outline { @apply border border-white/15 bg-white/5 hover:border-white/30; }
+      .card { @apply rounded-2xl border border-white/10 bg-white/5 shadow-glow; }
+      .muted { @apply text-white/60; }
+      .title { @apply text-3xl md:text-4xl font-bold tracking-tight; }
+      .h1 { @apply text-2xl font-semibold; }
+      .link { @apply underline decoration-sky/60 hover:decoration-sky; }
+      .prose-basic p { @apply leading-7 text-white/90; }
+    }
+  </style>
+
+  <!-- Your static CSS (optional, still loaded) -->
   <link rel="stylesheet" href="{% static 'main.css' %}">
 </head>
-<body>
-   {% if messages %}
-      <div class="messages">
-        {% for message in messages %}
-          <div class="alert {{ message.tags }}">
-            {{ message }}
-          </div>
-        {% endfor %}
-      </div>
-    {% endif %}
 
-  {% block content %}{% endblock %}
-  
+<body class="min-h-full bg-ink text-white bg-[image:var(--blob)] bg-no-repeat font-sans">
+  <!-- NAVBAR -->
+<header class="sticky top-0 z-50 border-b border-white/5 bg-black/40 backdrop-blur-xs">
+  <nav class="container flex items-center gap-4 py-3">
+    <!-- BRAND -->
+    <a href="{% url 'post_list' %}" class="flex items-center gap-2">
+      <img
+        src="{% static 'img/logo.png' %}"
+        alt="sharkBlog logo"
+        class="h-9 w-9 rounded-full border border-white/10 object-contain bg-white/5"
+      />
+      <span class="font-semibold tracking-wide text-white">sharkBlog</span>
+    </a>
+
+    <!-- LEFT LINKS -->
+    <div class="ml-6 hidden sm:flex items-center gap-1">
+      <a href="{% url 'post_list' %}"
+         class="px-3 py-2 rounded-lg hover:bg-white/5 transition
+         {% if request.resolver_match.url_name == 'post_list' %}bg-white/5{% endif %}">
+        Posts
+      </a>
+
+      {% if user.is_authenticated %}
+        <a href="{% url 'my_posts' %}"
+           class="px-3 py-2 rounded-lg hover:bg-white/5 transition
+           {% if request.resolver_match.url_name == 'my_posts' %}bg-white/5{% endif %}">
+          Dashboard
+        </a>
+        <a href="{% url 'make_post' %}" class="px-3 py-2 rounded-lg btn">New Post</a>
+      {% endif %}
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="ml-auto flex items-center gap-2">
+      {% if user.is_authenticated %}
+        <!-- PROFILE DROPDOWN -->
+        <details class="relative group">
+          <summary class="list-none flex items-center gap-3 cursor-pointer select-none px-2 py-1 rounded-lg hover:bg-white/5">
+            {% if user.profile.profile_pic %}
+              <img
+                src="{{ user.profile.profile_pic.url }}"
+                alt="{{ user.get_full_name|default:user.username }}"
+                class="h-9 w-9 rounded-xl object-cover border border-white/10"
+              />
+            {% else %}
+              <div class="h-9 w-9 rounded-xl grid place-items-center border border-white/10 bg-white/5 text-sm font-semibold">
+                {{ user.username|slice:":1"|upper }}
+              </div>
+            {% endif %}
+            <div class="hidden sm:block text-left">
+              <div class="text-sm font-medium leading-4">{{ user.get_full_name|default:user.username }}</div>
+              <div class="text-xs text-white/60">@{{ user.username }}</div>
+            </div>
+            <svg class="w-4 h-4 text-white/60 sm:ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-width="2" d="M6 9l6 6 6-6"/>
+            </svg>
+          </summary>
+
+          <!-- DROPDOWN CONTENT -->
+          <div class="absolute right-0 mt-2 w-56 rounded-2xl border border-white/10 bg-ink/95 backdrop-blur-xs shadow-glow p-2">
+            <a href="{% url 'profile' %}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5">
+              <i class="fa-regular fa-user text-white/70"></i>
+              <span>Profile</span>
+            </a>
+
+            <a href="{% url 'my_posts' %}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5">
+              <i class="fa-regular fa-square-check text-white/70"></i>
+              <span>Dashboard</span>
+            </a>
+
+            <div class="my-2 h-px bg-white/10"></div>
+
+            <a href="{% url 'logout' %}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5 text-rose-300/90">
+              <i class="fa-solid fa-arrow-right-from-bracket"></i>
+              <span>Logout</span>
+            </a>
+          </div>
+        </details>
+      {% else %}
+        <!-- WHEN LOGGED OUT -->
+        <a href="{% url 'login' %}" class="px-3 py-2 rounded-lg hover:bg-white/5 transition">Login</a>
+        <a href="{% url 'signup' %}" class="px-3 py-2 rounded-lg btn-outline">Sign up</a>
+      {% endif %}
+    </div>
+
+    <!-- MOBILE MENU -->
+    <div class="sm:hidden ml-2">
+      <details class="relative">
+        <summary class="list-none px-3 py-2 rounded-lg hover:bg-white/5 cursor-pointer">
+          <i class="fa-solid fa-bars"></i>
+        </summary>
+        <div class="absolute right-0 mt-2 w-44 rounded-2xl border border-white/10 bg-ink/95 backdrop-blur-xs shadow-glow p-2">
+          <a href="{% url 'post_list' %}" class="block px-3 py-2 rounded-lg hover:bg-white/5">Posts</a>
+          {% if user.is_authenticated %}
+            <a href="{% url 'my_posts' %}" class="block px-3 py-2 rounded-lg hover:bg-white/5">Dashboard</a>
+            <a href="{% url 'make_post' %}" class="block px-3 py-2 rounded-lg hover:bg-white/5">New Post</a>
+            <a href="{% url 'logout' %}" class="block px-3 py-2 rounded-lg hover:bg-white/5">Logout</a>
+          {% else %}
+            <a href="{% url 'login' %}" class="block px-3 py-2 rounded-lg hover:bg-white/5">Login</a>
+            <a href="{% url 'signup' %}" class="block px-3 py-2 rounded-lg hover:bg-white/5">Sign up</a>
+          {% endif %}
+        </div>
+      </details>
+    </div>
+  </nav>
+</header>
+
+
+
+  <!-- Flash messages -->
+  {% if messages %}
+    <div class="container mt-4 space-y-2">
+      {% for message in messages %}
+        {% with tag=message.tags %}
+        <div class="rounded-xl border p-3
+                    {% if 'success' in tag %} border-[color:rgba(167,243,208,.4)] bg-[color:rgba(167,243,208,.1)] {% endif %}
+                    {% if 'error' in tag %} border-[color:rgba(244,114,182,.4)] bg-[color:rgba(244,114,182,.1)] {% endif %}
+                    {% if 'warning' in tag %} border-[color:rgba(245,158,11,.4)] bg-[color:rgba(245,158,11,.1)] {% endif %}
+                    {% if 'info' in tag %} border-[color:rgba(56,189,248,.4)] bg-[color:rgba(56,189,248,.1)] {% endif %}">
+          <p class="text-sm/6">{{ message }}</p>
+        </div>
+        {% endwith %}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Main -->
+  <main class="container py-8">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/5">
+    <div class="container py-8 text-sm muted flex items-center justify-between">
+      <p>© {% now "Y" %} SharkBlog</p>
+      <div class="flex gap-3">
+        <span class="h-2 w-2 rounded-full bg-sky/70 shadow-neon"></span>
+        <span class="h-2 w-2 rounded-full bg-rose/70 shadow-neon"></span>
+        <span class="h-2 w-2 rounded-full bg-glow/70 shadow-neon"></span>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

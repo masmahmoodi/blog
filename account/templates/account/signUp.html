@@ -2,34 +2,50 @@
 {% block title %}Sign up{% endblock %}
 
 {% block content %}
-<form method="post">
-  {% csrf_token %}
-  {{ form.non_field_errors }}
+  <div class="mx-auto max-w-md card p-6">
+    <h1 class="h1">Create an account</h1>
+    <form method="post" class="mt-4 space-y-4">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
 
-  {{ form.username.label_tag }}
-  {{ form.username }}
-  {{ form.username.errors }}
+      <div>
+        <label class="block text-sm muted">{{ form.username.label }}</label>
+        {{ form.username }}
+        <p class="text-sm text-rose/70 mt-1">{{ form.username.errors|striptags }}</p>
+      </div>
 
-  {{ form.email.label_tag }}
-  {{ form.email }}
-  {{ form.email.errors }}
+      <div>
+        <label class="block text-sm muted">{{ form.email.label }}</label>
+        {{ form.email }}
+        <p class="text-sm text-rose/70 mt-1">{{ form.email.errors|striptags }}</p>
+      </div>
 
-  {{ form.first_name.label_tag }}
-  {{ form.first_name }}
-  {{ form.first_name.errors }}
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm muted">{{ form.first_name.label }}</label>
+          {{ form.first_name }}
+          <p class="text-sm text-rose/70 mt-1">{{ form.first_name.errors|striptags }}</p>
+        </div>
+        <div>
+          <label class="block text-sm muted">{{ form.last_name.label }}</label>
+          {{ form.last_name }}
+          <p class="text-sm text-rose/70 mt-1">{{ form.last_name.errors|striptags }}</p>
+        </div>
+      </div>
 
-  {{ form.last_name.label_tag }}
-  {{ form.last_name }}
-  {{ form.last_name.errors }}
+      <div>
+        <label class="block text-sm muted">{{ form.password1.label }}</label>
+        {{ form.password1 }}
+        <p class="text-sm text-rose/70 mt-1">{{ form.password1.errors|striptags }}</p>
+      </div>
 
-  {{ form.password1.label_tag }}
-  {{ form.password1 }}
-  {{ form.password1.errors }}
+      <div>
+        <label class="block text-sm muted">{{ form.password2.label }}</label>
+        {{ form.password2 }}
+        <p class="text-sm text-rose/70 mt-1">{{ form.password2.errors|striptags }}</p>
+      </div>
 
-  {{ form.password2.label_tag }}
-  {{ form.password2 }}
-  {{ form.password2.errors }}
-
-  <button type="submit">Sign up</button>
-</form>
+      <button type="submit" class="w-full btn">Sign up</button>
+    </form>
+  </div>
 {% endblock %}

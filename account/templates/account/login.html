@@ -2,18 +2,25 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<form method="post">
-  {% csrf_token %}
-  {{ form.non_field_errors }}
+  <div class="mx-auto max-w-md card p-6">
+    <h1 class="h1">Login</h1>
+    <form method="post" class="mt-4 space-y-4">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
 
-  {{ form.username.label_tag }}
-  {{ form.username }}
-  {{ form.username.errors }}
+      <div>
+        <label class="block text-sm muted">{{ form.username.label }}</label>
+        {{ form.username }}
+        <p class="text-sm text-rose/70 mt-1">{{ form.username.errors|striptags }}</p>
+      </div>
 
-  {{ form.password.label_tag }}
-  {{ form.password }}            <!-- not form.passowrd -->
-  {{ form.password.errors }}
+      <div>
+        <label class="block text-sm muted">{{ form.password.label }}</label>
+        {{ form.password }}
+        <p class="text-sm text-rose/70 mt-1">{{ form.password.errors|striptags }}</p>
+      </div>
 
-  <button type="submit">Login</button>
-</form>
+      <button type="submit" class="w-full btn">Login</button>
+    </form>
+  </div>
 {% endblock %}

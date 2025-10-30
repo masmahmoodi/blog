@@ -1,33 +1,63 @@
-{%  extends 'base.html' %}
+{% extends 'base.html' %}
 
-{%  block content  %}
+{% block title %}{{ post.title }}{% endblock %}
 
-     <h1 class="h">{{ post.title }}</h1>
-    <h2>{{ post.body }}</h2>
-    <h3>{{ post.author }}</h3>
-    <h4>{{ post.created_at }}</h4>
-    <h5>{{ post.updated_at }}</h5>
+{% block content %}
+  <article class="mx-auto max-w-3xl card p-6">
+    <div class="mb-4 flex flex-wrap items-center gap-3 text-sm muted">
+      <span>{{ post.created_at|date:"M j, Y • H:i" }}</span>
+      <span>• by <strong class="text-white/90">{{ post.author }}</strong></span>
+      <span class="muted">Updated {{ post.updated_at|date:"M j, Y" }}</span>
+    </div>
 
-    <form  method="post">
-        {% csrf_token %}
-        {{comment.comment_body.label_tag}}
-        <br>
-        {{ comment.comment_body }}
-        <br>
-        <button type="submit">comment</button>
-    </form>
-     
+    <h1 class="text-3xl md:text-4xl font-bold tracking-tight">{{ post.title }}</h1>
+    <div class="mt-4 prose-basic">
+      <p>{{ post.body }}</p>
+    </div>
+
+    <div class="mt-6 flex gap-2">
+      {% if request.user.is_authenticated and request.user == post.author %}
+        <a href="{% url 'post_edit' post.slug %}" class="px-3 py-2 rounded-lg btn-outline">Edit</a>
+        <a href="{% url 'delete_post' post.slug %}" class="px-3 py-2 rounded-lg bg-rose/20 border border-rose/30 hover:bg-rose/30">Delete</a>
+      {% endif %}
+    </div>
+  </article>
+
+  <!-- Comments -->
+  <section class="mx-auto max-w-3xl mt-8">
+    <h2 class="h1">Comments</h2>
+
     {% if comments %}
-    <h1>Comments on the post</h1>
-    {% for c in comments %}
-   
-    <p>{{c.author}}</p>
-    <p>{{c.comment_body}}</p>
-    <p>{{c.created_at}}</p>
-    {% if request.user == c.author %}
-    <a href="{% url 'edit_comment' comment_id=c.id %}"> Edit Comment </a>
-    <a href="{% url 'delete_comment' comment_id=c.id %}">Delete Comment</a>
+      <ul class="mt-4 space-y-4">
+        {% for c in comments %}
+          <li class="card p-4">
+            <div class="mb-1 text-sm muted">
+              <span class="font-medium text-white/90">{{ c.author|default:"Anonymous" }}</span>
+              <span>· {{ c.created_at|date:"M j, Y H:i" }}</span>
+            </div>
+            <p class="text-white/90">{{ c.comment_body }}</p>
+
+            {% if request.user == c.author %}
+              <div class="mt-3 flex gap-2">
+                <a class="px-3 py-1 rounded-lg btn-outline" href="{% url 'edit_comment' comment_id=c.id %}">Edit</a>
+                <a class="px-3 py-1 rounded-lg bg-rose/20 border border-rose/30 hover:bg-rose/30" href="{% url 'delete_comment' comment_id=c.id %}">Delete</a>
+              </div>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="mt-2 muted">No comments yet.</p>
     {% endif %}
-    {% endfor %}
-    {% endif %}  
+
+    <!-- Comment form -->
+    <div class="mt-6 card p-5">
+      <form method="post" class="space-y-3">
+        {% csrf_token %}
+        <label class="block text-sm muted">{{ comment.comment_body.label }}</label>
+        {{ comment.comment_body }}
+        <button type="submit" class="btn">Comment</button>
+      </form>
+    </div>
+  </section>
 {% endblock %}

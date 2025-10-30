@@ -1,18 +1,23 @@
 {% extends 'base.html' %}
-
-{% block title %}
-    Dashboard - My Posts
-{% endblock %}
+{% block title %}Dashboard – My Posts{% endblock %}
 
 {% block content %}
-    {% for post in posts %}
-        <div>
-           <h2>{{ post.body }}</h2>
-          <h3>{{ post.author }}</h3>
-          <a href="{% url 'post_edit' post.slug %}">Edit post</a>
-          <a href="{% url 'delete_post' post.slug %}">delete post</a>
+  <h1 class="title mb-6">My Posts</h1>
+  {% for post in posts %}
+    <div class="card p-5 mb-6">
+      <h2 class="text-xl font-semibold">{{ post.title }}</h2>
+      <p class="mt-2 text-white/80 line-clamp-3">{{ post.body }}</p>
+      <div class="mt-3 flex items-center justify-between text-sm muted">
+        <span>by {{ post.author }}</span>
+        <div class="flex gap-2">
+          <a href="{% url 'post_edit' post.slug %}" class="px-3 py-1 rounded-lg btn-outline">Edit</a>
+          <a href="{% url 'delete_post' post.slug %}" class="px-3 py-1 rounded-lg bg-rose/20 border border-rose/30 hover:bg-rose/30">Delete</a>
         </div>
-        <h1>-----------------------</h1>
-        <h1>-----------------------</h1>
-    {% endfor %}
+      </div>
+    </div>
+  {% empty %}
+    <div class="card p-6">
+      <p class="text-white/80">You haven't posted anything yet.</p>
+    </div>
+  {% endfor %}
 {% endblock %}
