@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('blog.urls')),   # homepage handled by blog app
     path('account/', include("account.urls")),
+    path('api/', include("api.urls")),
 ]
 
 

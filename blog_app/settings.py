@@ -37,9 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # drf 
+    
+    "rest_framework",
+    "corsheaders",
+
     # my custom apps
     'blog',
     'account',
+    'api',
     
 ]
 LOGIN_URL="login"
@@ -49,6 +55,7 @@ LOGOUT_REDIRECT_URL = "login"
 
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -133,6 +140,14 @@ STATICFILES_DIRS = [BASE_DIR / 'static']   # <-- tell Django about /static at th
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+]
 
 
 
