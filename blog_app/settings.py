@@ -48,6 +48,16 @@ INSTALLED_APPS = [
     'api',
     
 ]
+#  DRF Pagination
+REST_FRAMEWORK ={
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5,  
+}
+
+
+
+
+
 LOGIN_URL="login"
 LOGIN_REDIRECT_URL = "post_list"
 LOGOUT_REDIRECT_URL = "login"
