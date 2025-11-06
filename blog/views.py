@@ -17,6 +17,7 @@ def post_list(request):
     }
     return render(request, 'blog/post_list.html', context)
 
+
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug = slug)
     comments = post.comments.all()
