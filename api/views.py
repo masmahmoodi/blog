@@ -17,7 +17,7 @@ def post_list(request):
     paginator = PageNumberPagination()
     posts = paginator.paginate_queryset(posts,request)
     serializer = PostSerializer(posts, many=True)
-
+    
     return paginator.get_paginated_response(serializer.data)
 
 @api_view(["GET"])
