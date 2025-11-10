@@ -2,6 +2,7 @@ import React from "react"
 import { Link, useSearchParams } from "react-router-dom"
 
 export default function All_Posts() {
+  
   const [posts, setPosts] = React.useState([])
   const [isLoading, setLoading] = React.useState(true)
   const [next, setNext] = React.useState(null)
@@ -56,7 +57,7 @@ export default function All_Posts() {
       <h2>{post.body}</h2>
       <h3>{post.author}</h3>
       <Link to={`/post/${post.slug}/edit`}>Edit</Link>
-      <Link to={`/post/delete`}>D</Link>
+      <Link to={`/api/posts/${post.slug}`}>Delete</Link>
     </div>
   ))
 
@@ -67,6 +68,7 @@ export default function All_Posts() {
 
   return (
     <div>
+      <Link to="post/new">Create a post </Link>
       {all_posts}
       <div>
         {previous && <button onClick={() => updateUrl(previous)}>Previous</button>}

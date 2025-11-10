@@ -4,6 +4,7 @@ import Layout from "./Component/Layout"
 import All_Posts from "./All_Posts"
 import PostDetail from "./PostDetail"
 import Edit_Post from "./Component/Edit_Post"
+import Create_Post from "./Component/Create_Post"
 import Delete from "./Component/Delete"
 
 export default function App() {
@@ -17,10 +18,10 @@ export default function App() {
 
     <Route path="/" element={<Layout />}> 
      <Route index element={<All_Posts />} /> 
-    <Route to="post">
+    <Route path="post">
      <Route path=":slug" element={<PostDetail />} />
-     <Route to=":slug/edit"  element={<Edit_Post /> }/>
-     <Route to="new" element={<Create_Post />} />
+     <Route path=":slug/edit"  element={<Edit_Post /> }/>
+     <Route path="new" element={<Create_Post />} />
     </Route>
      </Route >
   
