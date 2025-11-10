@@ -35,10 +35,6 @@ class Post(models.Model):
     
 
 
-
-
-
-
 class Comment(models.Model):
     comment_body = models.TextField()
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="comments")

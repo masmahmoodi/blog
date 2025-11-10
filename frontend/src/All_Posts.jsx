@@ -52,9 +52,11 @@ export default function All_Posts() {
 
   const all_posts = posts.map((post) => (
     <div key={post.id || post.slug}>
-      <Link to={`/posts/${post.slug}`}><h1>{post.title}</h1></Link>
+      <Link to={`/post/${post.slug}`}><h1>{post.title}</h1></Link>
       <h2>{post.body}</h2>
       <h3>{post.author}</h3>
+      <Link to={`/post/${post.slug}/edit`}>Edit</Link>
+      <Link to={`/post/delete`}>D</Link>
     </div>
   ))
 
